@@ -187,10 +187,9 @@ class Encryption {
     "+",
   ];
 
-  doubleChecker(key) {
-    let totalMatches = 0;
+  doubleChecker(key) { 
     for (let j = 0; j < key.length; j++) {
-      for (let k = 0; k < key.length; k++) {
+      for (let k = j; k < key.length; k++) {
         let miniMatches = 0;
         for (let i = 0; i < key[k].length; i++) {
           if (k !== j) {
@@ -199,13 +198,10 @@ class Encryption {
             }
           }
           if (miniMatches > 2) {
-            totalMatches += 1;
+            return false;
           }
         }
       }
-    }
-    if (totalMatches > 0) {
-      return false;
     }
     return true;
   }
@@ -233,7 +229,7 @@ class Encryption {
     let final = "";
     for (let i = level; i > 0; i--) {
       for (let letter of starter) {
-        for (let key of Object.keys(this.encryptionKey)) {
+        for (let key in this.encryptionKey) {
           if (letter === key) {
             final += keyList[this.encryptionKey[key]];
           }
@@ -246,39 +242,27 @@ class Encryption {
   }
 
   decrypter(sentence, level = 1, keyList) {
-    // console.log(sentence);
     let starter = sentence;
     let final = "";
     for (let i = level; i > 0; i--) {
       for (let i = 0; i < starter.length; i += 3) {
-        for (let key of Object.keys(this.encryptionKey)) {
-        //   console.log(
-        //     keyList[this.encryptionKey[key]],
-        //     starter.slice(i, i + 3)
-        //   );
+        for (let key in this.encryptionKey) {
           if (keyList[this.encryptionKey[key]] === starter.slice(i, i + 3)) {
-            // console.log("here now")
             final += key;
-            // console.log(final+ "      " + starter);
           }
         }
       }
-    //   console.log(`----------STARTER ${starter}`);
-    //   console.log(`----------FINAL ${final}`);
       starter = final;
       final = "";
     }
-    // console.log(sentence);
-    // console.log(starter);
     return starter;
   }
 }
 
 const cipher = new Encryption();
-let enc = cipher.encrypter("wooooork", 2);
-let dec = cipher.decrypter(enc[0], 2, enc[1]);
-console.log(enc[0]);
+let [final, keylist] = cipher.encrypter("does this work?", 2);
+let dec = cipher.decrypter(final, 2, keylist); 
+console.log(final);
 console.log(dec);
-console.log(enc[1]);
-console.log(enc[0].length);
-console.log(cipher.alphabet.length);
+console.log(keylist);
+console.log(final.length);

@@ -1,6 +1,8 @@
 class Encryption {
-  constructor(level = 1) {
+  constructor(passcode, level = 1) {
+    this.passcode = passcode;
     this.level = level;
+    this.passcodeAttempts = 0;
     this.key = this.keyGenerator();
   }
   alphabet = [
@@ -97,6 +99,16 @@ class Encryption {
     "+",
   ];
 
+  getKey = (passcode) => {
+    if (this.passcode === passcode) {
+      return this.key;
+    } else if (this.passcodeAttempts < 5) {
+      this.passcodeAttempts++;
+      return `Incorrect passcode ${5 - this.passcodeAttempts} attempts left.`;
+    }
+    return "You have been locked out of the system.";
+  };
+
   doubleChecker(key) {
     for (let j = 0; j < key.length; j++) {
       for (let k = j; k < key.length; k++) {
@@ -133,15 +145,13 @@ class Encryption {
   }
 
   encrypter(sentence) {
-    const keyList = this.key;
-    const level = this.level;
     let starter = sentence;
     let final = "";
-    for (let i = level; i > 0; i--) {
+    for (let i = this.level; i > 0; i--) {
       for (let letter of starter) {
         for (let key of this.alphabet) {
           if (letter === key) {
-            final += keyList[this.alphabet.indexOf(key)];
+            final += this.key[this.alphabet.indexOf(key)];
           }
         }
       }
@@ -152,14 +162,14 @@ class Encryption {
   }
 
   decrypter(sentence) {
-    const level = this.level;
-    const keyList = this.key;
     let starter = sentence;
     let final = "";
-    for (let i = level; i > 0; i--) {
+    for (let i = this.level; i > 0; i--) {
       for (let i = 0; i < starter.length; i += 3) {
         for (let key of this.alphabet) {
-          if (keyList[this.alphabet.indexOf(key)] === starter.slice(i, i + 3)) {
+          if (
+            this.keyList[this.alphabet.indexOf(key)] === starter.slice(i, i + 3)
+          ) {
             final += key;
           }
         }
@@ -171,7 +181,7 @@ class Encryption {
   }
 }
 
-const cipher = new Encryption(2);
+const cipher = new Encryption("easy", 2);
 let final = cipher.encrypter("does this work?");
 let dec = cipher.decrypter(final);
 console.log(final);

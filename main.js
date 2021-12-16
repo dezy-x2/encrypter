@@ -1,4 +1,8 @@
 class Encryption {
+  constructor(level = 1) {
+    this.level = level;
+    this.key = this.keyGenerator();
+  }
   alphabet = [
     "a",
     "b",
@@ -128,8 +132,9 @@ class Encryption {
     return key;
   }
 
-  encrypter(sentence, level = 1) {
-    const keyList = this.keyGenerator();
+  encrypter(sentence) {
+    const keyList = this.key;
+    const level = this.level;
     let starter = sentence;
     let final = "";
     for (let i = level; i > 0; i--) {
@@ -143,10 +148,12 @@ class Encryption {
       starter = final;
       final = "";
     }
-    return [starter, keyList];
+    return starter;
   }
 
-  decrypter(sentence, level = 1, keyList) {
+  decrypter(sentence) {
+    const level = this.level;
+    const keyList = this.key;
     let starter = sentence;
     let final = "";
     for (let i = level; i > 0; i--) {
@@ -164,10 +171,9 @@ class Encryption {
   }
 }
 
-const cipher = new Encryption();
-let [final, keylist] = cipher.encrypter("does this work?", 2);
-let dec = cipher.decrypter(final, 2, keylist);
+const cipher = new Encryption(2);
+let final = cipher.encrypter("does this work?");
+let dec = cipher.decrypter(final);
 console.log(final);
 console.log(dec);
-console.log(keylist);
 console.log(final.length);

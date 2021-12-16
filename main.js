@@ -101,6 +101,7 @@ class Encryption {
 
   getKey = (passcode) => {
     if (this.passcode === passcode) {
+      this.passcodeAttempts = 0;
       return this.key;
     } else if (this.passcodeAttempts < 5) {
       this.passcodeAttempts++;
@@ -168,7 +169,7 @@ class Encryption {
       for (let i = 0; i < starter.length; i += 3) {
         for (let key of this.alphabet) {
           if (
-            this.keyList[this.alphabet.indexOf(key)] === starter.slice(i, i + 3)
+            this.key[this.alphabet.indexOf(key)] === starter.slice(i, i + 3)
           ) {
             final += key;
           }
@@ -181,9 +182,8 @@ class Encryption {
   }
 }
 
-const cipher = new Encryption("easy", 2);
-let final = cipher.encrypter("does this work?");
-let dec = cipher.decrypter(final);
-console.log(final);
-console.log(dec);
-console.log(final.length);
+const myCipher = new Encryption("easy", 2);
+let myFinal = myCipher.encrypter("does this work?");
+let myDec = myCipher.decrypter(myFinal);
+console.log(myFinal);
+console.log(myDec);

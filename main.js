@@ -1,10 +1,15 @@
 class Encryption {
   constructor(passcode, level = 1) {
+    // set a passcode in order to access the encryption key
     this.passcode = passcode;
+    // the encryption & decryption funcs will use this
     this.level = level;
+    // keeps track of how many times the passcode has been attempted to ensure that it isn't hacked
     this.passcodeAttempts = 0;
+    // this is the key that the whole instance uses to encrypt and decrypt
     this.key = this.keyGenerator();
   }
+  // these are all of the characters that can be used
   alphabet = [
     "a",
     "b",
@@ -101,44 +106,57 @@ class Encryption {
 
   getKey = (passcode) => {
     if (this.passcode === passcode) {
+      // if the passcode is correct, return the key & reset the passcode attempts
       this.passcodeAttempts = 0;
       return this.key;
     } else if (this.passcodeAttempts < 5) {
+      // if the passcode is incorrect, increment the passcode attempts
       this.passcodeAttempts++;
       return `Incorrect passcode ${5 - this.passcodeAttempts} attempts left.`;
     }
+    // if the passcode attempts are over 5, return an error
     return "You have been locked out of the system.";
   };
 
+  // this function checks the encryption key to make sure there aren't repeats
   doubleChecker(key) {
+    // go through the bigger list twice so we can compare it to itself
     for (let j = 0; j < key.length; j++) {
       for (let k = j; k < key.length; k++) {
+        // keep track of how many times the same letter is found in an inner list
         let miniMatches = 0;
+        // this goes through the inner lists
         for (let i = 0; i < key[k].length; i++) {
+          // if we're looking at the same inner list move on
           if (k !== j) {
             if (key[k][i] === key[j][i]) {
               miniMatches++;
             }
           }
+          // if the inner list has more than one of the same letter, return false meaning the key is flawed
           if (miniMatches > 2) {
             return false;
           }
         }
       }
     }
+    // if it passes all the scutiny return true and the key is good
     return true;
   }
 
   keyGenerator() {
     let key = [];
+    // for every letter in the alphabet make a mini key that for that letter
     for (let i = 0; i < this.alphabet.length; i++) {
       let littleKey = "";
       for (let j = 0; j < 3; j++) {
+        // pick a random letter from the alphabet 3x
         littleKey +=
           this.alphabet[Math.floor(Math.random() * this.alphabet.length)];
       }
       key.push(littleKey);
     }
+    // check the key to make sure there aren't repeats
     if (!this.doubleChecker(key)) {
       return this.keyGenerator();
     }
@@ -148,14 +166,17 @@ class Encryption {
   encrypter(sentence) {
     let starter = sentence;
     let final = "";
+    // repeat these steps for every level of encryption specified in the constructor
     for (let i = this.level; i > 0; i--) {
       for (let letter of starter) {
         for (let key of this.alphabet) {
+          // if the letter is equal to the key, add the key to the final string
           if (letter === key) {
             final += this.key[this.alphabet.indexOf(key)];
           }
         }
       }
+      // set current to a holder value and reset a place to manipulate the string
       starter = final;
       final = "";
     }
@@ -165,9 +186,11 @@ class Encryption {
   decrypter(sentence) {
     let starter = sentence;
     let final = "";
+    // repeat these steps for every level of encryption specified in the constructor
     for (let i = this.level; i > 0; i--) {
       for (let i = 0; i < starter.length; i += 3) {
         for (let key of this.alphabet) {
+          // check to see if the key is in the sentence; this is also the step that fixes the amount of chars a key can have
           if (
             this.key[this.alphabet.indexOf(key)] === starter.slice(i, i + 3)
           ) {
@@ -175,6 +198,7 @@ class Encryption {
           }
         }
       }
+      // set current to a holder value and reset a place to manipulate the string
       starter = final;
       final = "";
     }

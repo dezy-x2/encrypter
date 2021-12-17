@@ -120,8 +120,8 @@ class Encryption {
 
   miniChecker = (miniKey1, minikey2) =>
     // uses the 'every' method to check if the mini keys are the same list
-    miniKey1.every((_, idx) => {
-      miniKey1[idx] === minikey2[idx];
+    miniKey1.every((char, idx) => {
+      char === minikey2[idx];
     });
 
   // this function checks the encryption key to make sure there aren't repeats

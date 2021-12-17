@@ -118,23 +118,18 @@ class Encryption {
     return "You have been locked out of the system.";
   };
 
+  miniChecker = (miniKey1, minikey2) =>
+    miniKey1.every((_, idx) => {
+      miniKey1[idx] === minikey2[idx];
+    });
+
   // this function checks the encryption key to make sure there aren't repeats
   doubleChecker(key) {
     // go through the bigger list twice so we can compare it to itself
     for (let j = 0; j < key.length; j++) {
       for (let k = j; k < key.length; k++) {
-        // keep track of how many times the same letter is found in an inner list
-        let miniMatches = 0;
-        // this goes through the inner lists
-        for (let i = 0; i < key[k].length; i++) {
-          // if we're looking at the same inner list move on
-          if (k !== j) {
-            if (key[k][i] === key[j][i]) {
-              miniMatches++;
-            }
-          }
-          // if the inner list has more than one of the same letter, return false meaning the key is flawed
-          if (miniMatches > 2) {
+        if (k !== j) {
+          if (this.miniChecker(key[j].split(""), key[k].split(""))) {
             return false;
           }
         }

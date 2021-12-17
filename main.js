@@ -119,6 +119,7 @@ class Encryption {
   };
 
   miniChecker = (miniKey1, minikey2) =>
+    // uses the 'every' method to check if the mini keys are the same list
     miniKey1.every((_, idx) => {
       miniKey1[idx] === minikey2[idx];
     });
@@ -128,7 +129,9 @@ class Encryption {
     // go through the bigger list twice so we can compare it to itself
     for (let j = 0; j < key.length; j++) {
       for (let k = j; k < key.length; k++) {
+        // checks that we aren't looking the same key
         if (k !== j) {
+          // has to convert the minikeys (which are strings) to arrays so we can compare them
           if (this.miniChecker(key[j].split(""), key[k].split(""))) {
             return false;
           }
